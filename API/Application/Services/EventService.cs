@@ -14,10 +14,7 @@ namespace Application.Services
         public EventService(AppDbContext context, IMapper mapper) 
         {
             _context = context;
-            _mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<EventCreateRequest, EventItem>();
-            }).CreateMapper(); ;
+            _mapper = mapper;
         }
 
         public async Task<IEnumerable<EventItem>> GetEventItemsAsync(CancellationToken cancellationToken)

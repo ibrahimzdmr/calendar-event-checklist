@@ -11,6 +11,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAppDbContext();
 builder.Services.AddServiceExtensions();
 builder.Services.AddAutoMapper();
+builder.Services.AddCorsPolicy();
 
 var app = builder.Build();
 
@@ -20,6 +21,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCorsPolicy();
 
 app.UseHttpsRedirection();
 
