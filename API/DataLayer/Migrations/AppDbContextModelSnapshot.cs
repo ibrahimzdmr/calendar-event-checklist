@@ -26,15 +26,21 @@ namespace DataLayer.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("CurrentRepeatExecutionCount")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("ExecutionCount")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("Frequency")
                         .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("LastControlDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("LastRepeatDate")
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("TEXT");
@@ -43,10 +49,22 @@ namespace DataLayer.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<double>("PointValue")
+                        .HasColumnType("REAL");
+
                     b.Property<int>("RepeatTimeInFrequency")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TotalExecutionCount")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("TotalPoint")
+                        .HasColumnType("REAL");
+
+                    b.Property<int>("TotalRepeatCount")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id")

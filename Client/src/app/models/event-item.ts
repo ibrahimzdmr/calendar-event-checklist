@@ -6,7 +6,11 @@ export interface EventItem {
     description: string;
     frequency: Frequency;
     repeatTimeInFrequency: number;
-    executionCount: number;
+    currentRepeatExecutionCount: number;
+    pointValue: number;
+    totalPoint: number;
+    totalRepeatCount: number;
+    totalExecutionCount: number;
     status: boolean;
     createdDate: Date;
     modifiedDate: Date;

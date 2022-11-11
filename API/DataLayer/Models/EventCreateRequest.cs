@@ -8,5 +8,6 @@ namespace DataLayer.Models
         public string Description { get; set; }
         public Frequency Frequency { get; set; }
         public int RepeatTimeInFrequency { get; set; }
+        public double PointValue { get; set; }
     }
 }

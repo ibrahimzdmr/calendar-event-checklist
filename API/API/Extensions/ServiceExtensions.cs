@@ -9,6 +9,7 @@ namespace API.Extensions
         public static IServiceCollection AddServiceExtensions(this IServiceCollection services)
         {
             services.AddTransient<IEventService, EventService>();
+            services.AddTransient<IEventFrequencyCalculationService, EventFrequencyCalculationService>();
 
             return services;
         }
