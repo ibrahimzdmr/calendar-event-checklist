@@ -13,4 +13,8 @@ import { EventItem } from "../models/event-item";
     public getAllEvents() : Observable<EventItem[]> {
         return this.httpClient.get<EventItem[]>(serviceUrlCombiner('Event'));
     }
+
+    public controlEvents() {
+      return this.httpClient.post(serviceUrlCombiner('EventFrequencyCalculation', 'Control'), null);
+    }
   }

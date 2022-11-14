@@ -1,4 +1,5 @@
 ﻿using Application.Services;
+using DataLayer.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -13,9 +14,9 @@ namespace API.Controllers
         }
 
         [HttpPost("Control")]
-        public async Task ControlAllEventsAsync(CancellationToken cancellationToken)
+        public async Task<bool> ControlAllEventsAsync(CancellationToken cancellationToken)
         {
-            await _eventFrequencyCalculationService.ControlAllEventsAsync(cancellationToken);
+            return await _eventFrequencyCalculationService.ControlAllEventsAsync(cancellationToken);
         }
     }
 }

@@ -17,7 +17,6 @@ const _storeReducer = createReducer(
     }),
   );
 
-
 export function storeReducer(state : State | undefined, action : Action) {
     return _storeReducer(state, action);
   }

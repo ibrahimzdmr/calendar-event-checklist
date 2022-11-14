@@ -1,5 +1,18 @@
 .event-card {
-    border: 2px solid black;
+    border: 2px solid sienna;
     padding: 1rem;
     margin-top: 2rem;
+    background-color: aliceblue;
+    box-shadow: 1px 1px 7px sienna;
+}
+
+.event-card:hover {
+    box-shadow: 3px 3px 7px sienna;
+}
+
+.event-card .mini-header {
+    text-decoration: underline;
+    font-size: larger;
+    font-weight: 500;
+    
 }

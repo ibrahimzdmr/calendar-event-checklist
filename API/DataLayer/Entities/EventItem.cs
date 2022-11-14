@@ -11,6 +11,7 @@ namespace DataLayer.Entities
         public int CurrentRepeatExecutionCount { get; set; } = 0;
         public DateTime LastControlDate { get; set; } = DateTime.UtcNow;
         public DateTime LastRepeatDate { get; set; } = DateTime.UtcNow;
+        public DateTime NextRepeatDate { get; set; } = DateTime.UtcNow;
         public double PointValue { get; set; }
         public double TotalPoint { get; set; } = 0;
         public int TotalRepeatCount { get; set; } = 0;

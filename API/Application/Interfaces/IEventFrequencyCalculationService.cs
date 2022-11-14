@@ -1,8 +1,9 @@
 ﻿
+
 namespace Application.Services
 {
     public interface IEventFrequencyCalculationService
     {
-        Task ControlAllEventsAsync(CancellationToken cancellationToken);
+        Task<bool> ControlAllEventsAsync(CancellationToken cancellationToken);
     }
 }

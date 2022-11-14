@@ -1,6 +1,7 @@
 ﻿using API.Data;
 using Application.Interfaces;
 using DataLayer.Entities;
+using DataLayer.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Services
@@ -8,47 +9,47 @@ namespace Application.Services
     public class EventFrequencyCalculationService : IEventFrequencyCalculationService
     {
         readonly AppDbContext _context;
-        readonly IEventService _eventService;
-        public EventFrequencyCalculationService(AppDbContext context, IEventService eventService)
+        public EventFrequencyCalculationService(AppDbContext context)
         {
             _context = context;
-            _eventService = eventService;
         }
 
-        public async Task ControlAllEventsAsync(CancellationToken cancellationToken)
+        public async Task<bool> ControlAllEventsAsync(CancellationToken cancellationToken)
         {
             var events = await _context.Set<EventItem>().Where(i => i.Status).ToListAsync(cancellationToken);
 
             foreach (var item in events)
             {
-                switch (item.Frequency)
-                {
-                    case DataLayer.Enums.Frequency.Daily:
-                        await ControlDailyEventAsync(item, cancellationToken);
-                        break;
-                    case DataLayer.Enums.Frequency.Weekly:
-                        await ControlWeeklyEventAsync(item, cancellationToken);
-                        break;
-                    case DataLayer.Enums.Frequency.Fortnight:
-                        await ControlFortnightlyEventAsync(item, cancellationToken);
-                        break;
-                    case DataLayer.Enums.Frequency.Monthly:
-                        await ControlMonthlyEventAsync(item, cancellationToken);
-                        break;
-                    case DataLayer.Enums.Frequency.Yearly:
-                        await ControlYearlyEventAsync(item, cancellationToken);
-                        break;
-                    default:
-                        break;
-                }
+                await ControlEventAsync(item, GetDayFromFrequency(item.Frequency), cancellationToken);
                 await RefreshLastControlDateAsync(item, cancellationToken);
             }
 
+            return true;
+        }
+
+        private int GetDayFromFrequency(Frequency frequency)
+        {
+            switch (frequency)
+            {
+                case Frequency.Daily:
+                    return 1;
+                case Frequency.Weekly:
+                    return 7;
+                case Frequency.Fortnight:
+                    return 14;
+                case Frequency.Monthly:
+                    return 30;
+                case Frequency.Yearly:
+                    return 365;
+                default:
+                    return int.MaxValue;
+            }
         }
 
         private async Task RefreshLastControlDateAsync(EventItem eventItem, CancellationToken cancellationToken)
         {
             eventItem.LastControlDate = DateTime.UtcNow;
+            eventItem.NextRepeatDate = eventItem.LastRepeatDate.AddDays(GetDayFromFrequency(eventItem.Frequency));
             await _context.SaveChangesAsync(cancellationToken);
         }
 
@@ -69,20 +70,19 @@ namespace Application.Services
             eventItem.TotalRepeatCount += repeatCount;
         }
 
-        private async Task ControlDailyEventAsync(EventItem eventItem, CancellationToken cancellationToken)
+        private async Task ControlEventAsync(EventItem eventItem, int day, CancellationToken cancellationToken)
         {
             var dateDifference = DateTime.UtcNow.Subtract(eventItem.LastRepeatDate);
-
-            if (dateDifference.Days == 1)
+            if ( day <= dateDifference.Days && dateDifference.Days <= (day * 2) - 1)
             {
                 OneRepeatCalculation(ref eventItem);
 
-                eventItem.LastRepeatDate = eventItem.LastRepeatDate.AddDays(1);
+                eventItem.LastRepeatDate = eventItem.LastRepeatDate.AddDays(day);
                 await _context.SaveChangesAsync(cancellationToken);
             }
-            else if (dateDifference.Days > 1)
+            else if( dateDifference.Days >= (day * 2))
             {
-                var dayDifference = dateDifference.Days;
+                var dayDifference = Convert.ToInt32(Math.Floor(dateDifference.Days / day * 1.0));
 
                 OneRepeatCalculation(ref eventItem);
                 AbsentRepeatCalculation(ref eventItem, dayDifference - 1);
@@ -90,45 +90,6 @@ namespace Application.Services
 
                 await _context.SaveChangesAsync(cancellationToken);
             }
-
-        }
-
-        private async Task ControlWeeklyEventAsync(EventItem eventItem, CancellationToken cancellationToken)
-        {
-            var dateDifference = DateTime.UtcNow.Subtract(eventItem.LastRepeatDate.AddDays(-39));
-
-            if (7 <= dateDifference.Days && dateDifference.Days <= 13)
-            {
-                OneRepeatCalculation(ref eventItem);
-
-                eventItem.LastRepeatDate = eventItem.LastRepeatDate.AddDays(7);
-                await _context.SaveChangesAsync(cancellationToken);
-            }
-            else if ( dateDifference.Days > 13)
-            {
-                var weekDifference = Convert.ToInt32(Math.Floor(dateDifference.Days / 7.0));
-
-                OneRepeatCalculation(ref eventItem);
-                AbsentRepeatCalculation(ref eventItem, weekDifference - 1);
-                eventItem.LastRepeatDate = eventItem.LastRepeatDate.AddDays(weekDifference * 7);
-
-                await _context.SaveChangesAsync(cancellationToken);
-            }
-        }
-
-        private async Task ControlFortnightlyEventAsync(EventItem eventItem, CancellationToken cancellationToken)
-        {
-
-        }
-
-        private async Task ControlMonthlyEventAsync(EventItem eventItem, CancellationToken cancellationToken)
-        {
-
-        }
-
-        private async Task ControlYearlyEventAsync(EventItem eventItem, CancellationToken cancellationToken)
-        {
-
         }
     }
 }
