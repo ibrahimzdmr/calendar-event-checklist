@@ -7,6 +7,7 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { storeReducer } from './store/reducers/event.reducer';
 import { EventEffects } from './store/effects/event.effects';
+import { NgxSmartModalModule } from 'ngx-smart-modal';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { EventEffects } from './store/effects/event.effects';
     HttpClientModule,
     StoreModule.forRoot({ state : storeReducer }),
     EffectsModule.forRoot([EventEffects]),
+    NgxSmartModalModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]

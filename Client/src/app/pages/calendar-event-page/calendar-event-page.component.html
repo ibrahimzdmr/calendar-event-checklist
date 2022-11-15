@@ -1,7 +1,8 @@
 <div class="container">
     <div class="row"  *ngIf="events">
         <div class="col-sm-4" *ngFor="let item of events" >
-            <app-event-card [event]="item"></app-event-card>
+            <app-event-card [event]="item" (updateClicked)="showModal($event)"></app-event-card>
         </div>
     </div>
 </div>
+<app-event-modal></app-event-modal>

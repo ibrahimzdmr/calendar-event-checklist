@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
+import { NgxSmartModalService } from 'ngx-smart-modal';
 import { SubscriptionLike, tap } from 'rxjs';
 import { EventItem } from 'src/app/models/event-item';
 import { EventService } from 'src/app/services/event.service';
@@ -17,7 +18,8 @@ export class CalendarEventPageComponent implements OnDestroy {
   events!: EventItem[];
 
   constructor(readonly store: Store<{ state: State }>,
-    readonly eventService: EventService) { 
+    readonly eventService: EventService,
+    readonly ngxSmartModalService: NgxSmartModalService) { 
     this.subscribes.push(this.store.select(i => i.state.events).subscribe((events) => {
       if(events)
         this.events = events
@@ -37,6 +39,10 @@ export class CalendarEventPageComponent implements OnDestroy {
       this.store.dispatch(loadEvents());
       sub.unsubscribe();
     })
+  }
+
+  showModal(eventId: string) {
+    this.ngxSmartModalService.getModal('eventModal').open();
   }
 
 }

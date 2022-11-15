@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Frequency } from 'src/app/enums/frequency';
 import { EventItem } from 'src/app/models/event-item';
 
@@ -11,6 +11,10 @@ export class EventCardComponent implements OnInit {
 
   @Input()
   event!: EventItem;
+
+  @Output()
+  updateClicked: EventEmitter<string> = new EventEmitter<string>();
+
   remainingTime!: string;
 
   constructor() { 
@@ -42,6 +46,10 @@ export class EventCardComponent implements OnInit {
       default:
         return "";
     }
+  }
+
+  updateClick() {
+    this.updateClicked.emit(this.event.id);
   }
 
   private ticksToDateString(ms: number): string{
